@@ -62,7 +62,6 @@
 
     const startGame = () => {
       gameContainer.style.display = "block";
-
       addBlocks();
       ballStart();
     };
@@ -70,9 +69,10 @@
     const endGame = () => {
       ballX = 300;
       ballY = 250;
-      ballDx = 1;
+      ballDx = Math.random() < 0.5 ? 1 : -1;
       ballDy = 1;
       posX = 250;
+      box.style.left = `${posX}px`;
       blockContainer.innerHTML = "";
       gameContainer.style.display = "none";
       clearInterval(boxInterval);
@@ -129,7 +129,7 @@
       if (ballY >= 500) {
         changeBallDirection("y");
         endGame();
-        alert("თქვენ დამარცხდით")
+        alert("თქვენ დამარცხდით");
       }
       if (ballX <= 0) {
         changeBallDirection("x");
@@ -137,7 +137,12 @@
       if (ballY <= 0) {
         changeBallDirection("y");
       }
-      if (ballY >= 425 && ballX >= posX && ballX <= posX + 128) {
+      if (
+        ballY >= 425 &&
+        ballY <= 440 &&
+        ballX >= posX &&
+        ballX <= posX + 128
+      ) {
         changeBallDirection("y");
         // ballDx = ballDx * -1;
       }
@@ -171,7 +176,7 @@
         if (!isMoving) {
           BoxInterval = setInterval(function () {
             moveBox("right");
-          }, 3);
+          }, 2);
         }
         isMoving = true;
       }
@@ -180,7 +185,7 @@
         if (!isMoving) {
           BoxInterval = setInterval(function () {
             moveBox("left");
-          }, 3);
+          }, 2);
         }
         isMoving = true;
       }
