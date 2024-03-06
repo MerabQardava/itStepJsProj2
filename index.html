@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="index.js"></script>
+    <link href="./output.css" rel="stylesheet" />
+  </head>
+  <body>
+    <button class="border border-black p-1" onclick="rockPaperScissors()">
+      ჯეირანი
+    </button>
+    <button class="border border-black p-1" onclick="guessTheWord()">
+      გამოიცანი სიტყვა
+    </button>
+    <button class="border border-black p-1" onclick="startGame()">
+      თამაში
+    </button>
+
+    <div class="flex mt-16 justify-center">
+      <div
+        style="display: none"
+        id="gameContainer"
+        class="w-[587px] h-[500px] relative border box-border border-black"
+      >
+        <div id="blockContainer"></div>
+
+        <div
+          id="ball"
+          class="bg-red-800 w-9 h-9 rounded-full absolute transform -translate-x-1/2 -translate-y-1/2"
+        ></div>
+        <div
+          id="box"
+          style="bottom: 50px"
+          class="w-32 absolute h-5 bg-black"
+        ></div>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    // platform move logic
+    const box = document.getElementById("box");
+    const ball = document.getElementById("ball");
+    const blockContainer = document.getElementById("blockContainer");
+    const gameContainer = document.getElementById("gameContainer");
+    let ballX = 300;
+    let ballY = 250;
+    let ballDx = 1;
+    let ballDy = 1;
+    let posX = 250;
+    let boxInterval;
+    let ballInterval;
+    let isMoving = false;
+
+    ball.style.top = `${ballY}px`;
+    ball.style.left = `${ballX}px`;
+
+    box.style.left = `${posX}px`;
+    // console.log(blockContainer);
+
+    const startGame = () => {
+      gameContainer.style.display = "block";
+
+      addBlocks();
+      ballStart();
+    };
+
+    const endGame = () => {
+      ballX = 300;
+      ballY = 250;
+      ballDx = 1;
+      ballDy = 1;
+      posX = 250;
+      blockContainer.innerHTML = "";
+      gameContainer.style.display = "none";
+      clearInterval(boxInterval);
+      clearInterval(ballInterval);
+    };
+
+    console.log(document.elementFromPoint(172, 94));
+    const addBlocks = () => {
+      for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 3; j++) {
+          blockContainer.innerHTML += `<div style="left: ${i * 59}px;top:${
+            j * 25
+          }px" class="gameBlock absolute block w-[55px] inline-block  h-3 bg-black"></div>`;
+        }
+      }
+    };
+
+    const changeBallDirection = (axis) => {
+      if (axis === "y") {
+        ballDy = ballDy * -1;
+      } else if (axis === "x") {
+        ballDx = ballDx * -1;
+      }
+    };
+
+    const collisionCheck = () => {
+      let blockTop = document.elementFromPoint(
+        ball.getBoundingClientRect().x,
+        ball.getBoundingClientRect().y
+      );
+      let blockBottom = document.elementFromPoint(
+        ball.getBoundingClientRect().x,
+        ball.getBoundingClientRect().y + 32
+      );
+      // console.log(ball.getBoundingClientRect().x);
+      if (blockTop?.classList[0] === "gameBlock") {
+        changeBallDirection("y");
+        blockTop.style.display = "none";
+        // console.log(blockTop);
+      } else if (blockBottom?.classList[0] === "gameBlock") {
+        changeBallDirection("y");
+        blockBottom.style.display = "none";
+      }
+
+      if (blockContainer.innerHTML.trim() === "") {
+        console.log("blockContainer is empty");
+      }
+    };
+
+    const ballMove = () => {
+      if (ballX >= 600) {
+        changeBallDirection("x");
+      }
+      if (ballY >= 500) {
+        changeBallDirection("y");
+        endGame();
+        alert("თქვენ დამარცხდით")
+      }
+      if (ballX <= 0) {
+        changeBallDirection("x");
+      }
+      if (ballY <= 0) {
+        changeBallDirection("y");
+      }
+      if (ballY >= 425 && ballX >= posX && ballX <= posX + 128) {
+        changeBallDirection("y");
+        // ballDx = ballDx * -1;
+      }
+
+      ballX += ballDx;
+      ballY += ballDy;
+      ball.style.top = `${ballY}px`;
+      ball.style.left = `${ballX}px`;
+      // console.log(ball.style.top);
+      collisionCheck();
+    };
+
+    const ballStart = () => {
+      ballInterval = setInterval(ballMove, 3);
+    };
+
+    const moveBox = (direciton) => {
+      if (direciton === "right" && posX < 600 - 128) {
+        posX++;
+        box.style.left = `${posX}px`;
+        // console.log(posX);
+      } else if (direciton === "left" && posX > 0) {
+        posX--;
+        box.style.left = `${posX}px`;
+        // console.log(posX);
+      }
+    };
+
+    document.addEventListener("keydown", function (event) {
+      if (event.code === "ArrowRight") {
+        if (!isMoving) {
+          BoxInterval = setInterval(function () {
+            moveBox("right");
+          }, 3);
+        }
+        isMoving = true;
+      }
+
+      if (event.code === "ArrowLeft") {
+        if (!isMoving) {
+          BoxInterval = setInterval(function () {
+            moveBox("left");
+          }, 3);
+        }
+        isMoving = true;
+      }
+    });
+
+    document.addEventListener("keyup", function (event) {
+      if (event.code === "ArrowRight") {
+        clearInterval(BoxInterval);
+        isMoving = false;
+      }
+      if (event.code === "ArrowLeft") {
+        clearInterval(BoxInterval);
+        isMoving = false;
+      }
+    });
+
+    console.log("test");
+  </script>
+</html>
