@@ -53,6 +53,7 @@
     let boxInterval;
     let ballInterval;
     let isMoving = false;
+    let lost =false;
 
     ball.style.top = `${ballY}px`;
     ball.style.left = `${ballX}px`;
@@ -67,6 +68,7 @@
     };
 
     const endGame = () => {
+      lost=true
       ballX = 300;
       ballY = 250;
       ballDx = Math.random() < 0.5 ? 1 : -1;
@@ -117,8 +119,9 @@
         blockBottom.style.display = "none";
       }
 
-      if (blockContainer.innerHTML.trim() === "") {
-        console.log("blockContainer is empty");
+      if (blockContainer.innerHTML.trim() === ""&&(!lost)) {
+        endGame()
+        alert("გილოცავთ თქვენ გაიმარჯვეთ");
       }
     };
 
